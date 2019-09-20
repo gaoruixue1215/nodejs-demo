@@ -22,6 +22,8 @@ console.dir(module);
 var area = require('./02-export-object-v2');
 console.log('r=10,circle area:',circle.area(10));
 console.log('r=10,circle diameter:',circle.diameter(10));
+console.log('r=10,circle circumference:',circle.circumference(10));
+
 
 
 

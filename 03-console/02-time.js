@@ -1,5 +1,9 @@
 #!/usr/bin/node
 
+console.time('TEST');//标记开始时间
+longTask();
+console.timeEnd('TEST');//标记结束时间
+
 function longTask(){
     var num = 0;
     for(var i=0;i<10000;i++){
@@ -9,7 +13,7 @@ function longTask(){
       }
         
     }
-      return num;
+    return num;
 
 }
 
