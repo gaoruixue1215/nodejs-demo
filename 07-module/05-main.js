@@ -1,6 +1,6 @@
 #!/usr/bin/node
 
-const obj = require('./03-export-all');
+const obj = require('./05-export-all');
 
 console.log(obj.pi);
 console.log(obj.circle(10).area());
