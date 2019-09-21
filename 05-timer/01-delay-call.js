@@ -2,7 +2,6 @@
 
 function Bomb() {
     this.message = 'Bomb';
-
 }
 
 Bomb.prototype.explode = function() {

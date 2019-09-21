@@ -22,7 +22,7 @@ try {
     process.exit(2);
 }
 
-var ext  = path.extname(file);
+var ext  = path.extname(file);//获取文件扩展名
 var uriData = 'data:image/' + ext.slice(1, ext.length) + ';base64,' + data;
 
 var html = ''
