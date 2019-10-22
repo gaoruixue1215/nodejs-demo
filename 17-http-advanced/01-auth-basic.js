@@ -1,12 +1,10 @@
 #!/usr/bin/node
 
-const http = require('http'),
-      log = console.log;
+const server = require('http').createServer(),
+      assert = require('assert');
 
-http.createServer((req,res)=>{
-  log('request headers:',req.headers);
-  log('user-agent:',req.headers['user-agent']);
-  log('host:',req.headers.host);
+server.on('request', (req, res) => {
+  console.log(req.headers);
 
   switch(req.url) {
     case '/':
@@ -14,40 +12,50 @@ http.createServer((req,res)=>{
       break;
 
     case '/admin':
-      var auth = req.headers.authorization;
-      var usr = getUserNamePwd(auth);
-      if(usr.username === 'wangding' && user.password === '123'){
-        showSecret(req,res);
-      }else{
-        showNormal(res);
-      }
       sendSecretMsg(req, res);
       break;
 
     default:
       sendErrorMsg(res); 
-                                          
   }
+});
 
-  var auth = req.headers.authorization;
-  getUserNamePwd(auth);
-  res.end('OK!');
-}).listen(8080);
+server.listen(8080);
 
-function getUserNamePwd(auth){
- log('authorization:',req.headers.authorization);
- if(typeof auth !== 'undefined'){
-    auth = auth.split(' ');
-    if(auth[0] === 'basic'){
-      var buf = new Buffer(auth[1],'Base64');
-      var usr = buf.toString('utf8').split(':');
-      log('username:',user[0]);
-      log('password',user[1]);
-      log('username & password:',buf.toString('utf8'));
+function userNamePasswd(str) {
+  var msg = str.split(' ');
+  assert.equal(msg.length, 2, 'must to be 2');
+  assert.equal(msg[0], 'Basic', 'must to be Basic');
+
+  var account = Buffer.from(msg[1], 'base64');
+  msg = account.toString('utf8').split(':');
+
+  return {
+    userName: msg[0],
+    passWord: msg[1]
+  };
+}
+
+function sendNormalMsg(res) {
+  res.end('Good day!');
+}
+
+function sendSecretMsg(req, res) {
+  if(req.headers.authorization) {
+    var usr = userNamePasswd(req.headers.authorization);
+    console.log('\nauth:', usr);
+
+    if(usr.userName === 'wangding' && usr.passWord === '123') {
+      res.end('OK! wangding\'s mobile number: 13582027613');
+      return;
     }
-  }
- return {
-   username:user[0],
-   password:user[1]
- }
+  } 
+
+  res.writeHead(401, {'WWW-Authenticate': 'Basic'});
+  res.end('who you are?');
+}
+
+function sendErrorMsg(res) {
+  res.statusCode = 404;
+  res.end('404 Error, resource not found!');
 }
